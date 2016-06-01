@@ -78,9 +78,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'spirit3',
-	'USER': 'kirsty'
-	'PASSWORD': 'ngskirsty_201605'
-	'HOST': '10.180.103.203'
+	'USER': 'kirsty',
+	'PASSWORD': 'ngskirsty_201605',
+	'HOST': '10.180.103.203',
     }
 }
 
