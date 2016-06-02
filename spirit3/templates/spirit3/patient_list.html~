@@ -3,7 +3,14 @@
 		<title>Patient List</title>
 	</head>
 	<body>
-		<p>Hi there!</p>
-		<p>It works!</p>
+		<div>
+			<h1><a href="">Patient List</a></h1>
+		</div>
+
+		<div>
+			{% for patient in Patient_List %}
+				{{ Patient_List }}
+			{% endfor %}
+		</div>
 	</body>
 </html>
