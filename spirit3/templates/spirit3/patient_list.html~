@@ -7,10 +7,11 @@
 			<h1><a href="">Patient List</a></h1>
 		</div>
 
-		<div>
-			{% for patient in Patient_List %}
-				{{ Patient_List }}
-			{% endfor %}
-		</div>
+		{% for patient in patient_list %}
+			<div>
+				<p>NHS Number: {{ patient.nhsnumber }}</p>
+				<p>DOB : {{ patient.dob }}></p>
+			</div>
+		{% endfor %}		
 	</body>
 </html>
