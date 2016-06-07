@@ -330,6 +330,15 @@ class Sampleresult(models.Model):
         db_table = 'sampleresult'
 
 
+class Samplestatus(models.Model):
+    samplestatusid = models.AutoField(primary_key=True)
+    samplestatus = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+	managed = False
+	db_table = 'samplestatus'
+
+
 class Samples(models.Model):
     sampleid = models.AutoField(primary_key=True)
     patientid = models.ForeignKey(Patientinfo, models.DO_NOTHING, db_column='patientid', blank=True, null=True)
@@ -337,6 +346,7 @@ class Samples(models.Model):
     piid = models.ForeignKey(Pi, models.DO_NOTHING, db_column='piid', blank=True, null=True)
     hospitalsid = models.ForeignKey(Hospitals, models.DO_NOTHING, db_column='hospitalsid', blank=True, null=True)
     resultreportsid = models.ForeignKey(Resultreports, models.DO_NOTHING, db_column='resultreportsid', blank=True, null=True)
+    samplestatusid = models.ForeignKey(Samplestatus, models.DO_NOTHING, db_column='samplestatusid', blank=True, null=True)
 
     class Meta:
         managed = False
@@ -355,6 +365,7 @@ class Sampleseg(models.Model):
         managed = False
         db_table = 'sampleseg'
 
+	
 
 class Standardresults(models.Model):
     standardresultid = models.AutoField(primary_key=True)
