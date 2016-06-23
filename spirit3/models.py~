@@ -9,6 +9,14 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+class Resulttype(models.Model):
+    resulttypeid = models.AutoField(primary_key=True)
+    resulttype = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'resulttype'
+
 
 class Ablresutqc(models.Model):
     ablresutqcid = models.AutoField(primary_key=True)
@@ -94,10 +102,20 @@ class AuthUserUserPermissions(models.Model):
         db_table = 'auth_user_user_permissions'
         unique_together = (('user', 'permission'),)
 
+class Controltype(models.Model):
+    controltypeid = models.AutoField(primary_key=True)
+    controltype = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'controltype'
+
 
 class Controlresults(models.Model):
     controlresultid = models.AutoField(primary_key=True)
-    controltypeid = models.ForeignKey('Controltype', models.DO_NOTHING, db_column='controltypeid', blank=True, null=True)
+    controltypeid = models.ForeignKey(Controltype, models.DO_NOTHING, db_column='controltypeid', blank=True, null=True)
+    resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
+    wellnumber = models.CharField(max_length=45, blank=True, null=True)
     controlct = models.FloatField(blank=True, null=True)
     controlctmean = models.FloatField(blank=True, null=True)
     controlquant = models.FloatField(blank=True, null=True)
@@ -109,15 +127,6 @@ class Controlresults(models.Model):
     class Meta:
         managed = False
         db_table = 'controlresults'
-
-
-class Controltype(models.Model):
-    controltypeid = models.AutoField(primary_key=True)
-    controltype = models.CharField(max_length=45, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'controltype'
 
 
 class DjangoAdminLog(models.Model):
@@ -248,6 +257,7 @@ class Plate2Standard(models.Model):
 
 class Plateqc(models.Model):
     plateqcid = models.AutoField(primary_key=True)
+    resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
     watercheck = models.IntegerField(blank=True, null=True)
     negcheck = models.IntegerField(blank=True, null=True)
     thresholdcheck = models.IntegerField(blank=True, null=True)
@@ -294,15 +304,6 @@ class Resultreports(models.Model):
         db_table = 'resultreports'
 
 
-class Resulttype(models.Model):
-    resulttypeid = models.AutoField(primary_key=True)
-    resulttype = models.CharField(max_length=45, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'resulttype'
-
-
 class Sampleinfo(models.Model):
     sampleinfoid = models.AutoField(primary_key=True)
     taken = models.DateTimeField(blank=True, null=True)
@@ -317,6 +318,7 @@ class Sampleinfo(models.Model):
 class Sampleresult(models.Model):
     sampleresultid = models.AutoField(primary_key=True)
     resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
+    wellnumber = models.CharField(max_length=45, blank=True, null=True)
     samplect = models.FloatField(blank=True, null=True)
     samplectmean = models.FloatField(blank=True, null=True)
     samplequant = models.FloatField(blank=True, null=True)
@@ -332,7 +334,7 @@ class Sampleresult(models.Model):
 
 class Samplestatus(models.Model):
     samplestatusid = models.AutoField(primary_key=True)
-    samplestatus = models.CharField(max_legnth=45, blank=True, null=True)
+    samplestatus = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
 	managed = False
@@ -341,6 +343,7 @@ class Samplestatus(models.Model):
 
 class Samples(models.Model):
     sampleid = models.AutoField(primary_key=True)
+    samplenumber = models.CharField(max_length=45, blank=True, null=True)
     patientid = models.ForeignKey(Patientinfo, models.DO_NOTHING, db_column='patientid', blank=True, null=True)
     sampleinfoid = models.ForeignKey(Sampleinfo, models.DO_NOTHING, db_column='sampleinfoid', blank=True, null=True)
     piid = models.ForeignKey(Pi, models.DO_NOTHING, db_column='piid', blank=True, null=True)
@@ -359,17 +362,75 @@ class Sampleseg(models.Model):
     sampleresultid = models.ForeignKey(Sampleresult, models.DO_NOTHING, db_column='sampleresultid', blank=True, null=True)
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
     ablresultqcid = models.ForeignKey(Ablresutqc, models.DO_NOTHING, db_column='ablresultqcid', blank=True, null=True)
-    weelnumber = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'sampleseg'
 
 	
+class Standardtype(models.Model):
+    standardtypeid = models.AutoField(primary_key=True)
+    standardtype = models.CharField(max_length=45, blank=True, null=True)
+    
+    class Meta:
+        managed = False
+        db_table = 'standardtype'
+
+class Replicatect(models.Model):
+    replicatectid = models.AutoField(primary_key=True)
+    plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
+    standardtypeid = models.ForeignKey(Standardtype, models.DO_NOTHING, db_column='standardtypeid', blank=True, null=True)
+    resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
+    replicatect = models.FloatField(blank=True, null=True)
+         
+    class Meta:
+        managed = False
+        db_table = 'replicatect'
+
+
+class Standardcurve(models.Model):
+    standardcurveid = models.AutoField(primary_key=True)
+    standardcurvedescription = CharField(max_length=45, blank=True, null=True)
+    point1 = models.FloatField(blank=True, null=True)
+    point2 = models.FloatField(blank=True, null=True)
+    point3 = models.FloatField(blank=True, null=True)
+    point4 = models.FloatField(blank=True, null=True)
+    point5 = models.FloatField(blank=True, null=True)
+    point6 = models.FloatField(blank=True, null=True)
+    point7 = models.FloatField(blank=True, null=True)
+    point8 = models.FloatField(blank=True, null=True)
+    point9 = models.FloatField(blank=True, null=True)
+    point10 = models.FloatField(blank=True, null=True)
+    point11 = models.FloatField(blank=True, null=True)
+    point12 = models.FloatField(blank=True, null=True)
+    point13 = models.FloatField(blank=True, null=True)
+    point14 = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'standardcurve'
+
+
+class Standardcurvecriteria(models.Model):
+    standardcurvecriteriaid = models.AutoField(primary_key=True)
+    plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
+    resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
+    slope = models.FloatField(blank=True, null=True)
+    correlation = models.FloatField(blank=True, null=True)
+    intercept = models.FloatField(blank=True, null=True)
+    baseline3 = models.FloatField(blank=True, null=True)
+    posdeltact = models.FloatField(blank=True, null=True)
+         
+    class Meta:
+        managed = False
+        db_table = 'standardcurvecriteria'
+
 
 class Standardresults(models.Model):
     standardresultid = models.AutoField(primary_key=True)
-    standardtypeid = models.ForeignKey('Standardtype', models.DO_NOTHING, db_column='standardtypeid', blank=True, null=True)
+    standardtypeid = models.ForeignKey(Standardtype, models.DO_NOTHING, db_column='standardtypeid', blank=True, null=True)
+    resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
+    wellnumber = models.CharField(max_length=45, blank=True, null=True)
     standardct = models.FloatField(blank=True, null=True)
     standardctmean = models.FloatField(blank=True, null=True)
     standardquant = models.FloatField(blank=True, null=True)
@@ -382,14 +443,6 @@ class Standardresults(models.Model):
         managed = False
         db_table = 'standardresults'
 
-
-class Standardtype(models.Model):
-    standardtypeid = models.AutoField(primary_key=True)
-    standardtype = models.CharField(max_length=45, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'standardtype'
 
 
 class Users(models.Model):

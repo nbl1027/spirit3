@@ -1,0 +1,83 @@
+#This script is used for the automatic entry of RT-PCR BCR/ABL data into the SPIRIT 3 database
+
+#***** Imports libraries *****
+import csv
+from Tkinter import * 
+from tkFileDialog import * 
+import mysql.connector
+from datetime import datetime
+
+#***** Database Connection & Cursor *****
+cnx = mysql.connector.connect(user='kirsty', password='ngskirsty_201605', host='10.180.103.203', database = 'spirit3')
+cursor = cnx.cursor()
+
+# ***** Variables ******
+ablpos = []
+bcrablpos = []
+ablneg = []
+bcrablneg = []
+ablh2o = []
+bcrablh2o = [] 
+bcrablstd = []
+ablstd = []
+bcrablsample = []
+ablsample = []
+
+#****  Functions for use in script ******
+#Function sorts the results in the csv file into POS/NEG/H2O/Standard/Sample and ABL/BCRABL
+def resultsort(csv):
+	for row in csv:
+		if any("POS" in s for s in row):
+			if any ("BCR-ABL" in s for s in row):
+				del row[2:4]
+				row[1] = 2
+				row.append(1)
+				bcrablpos.append(row)
+			else:
+				del row[2:4]
+				row[1] = 1
+				row.append(1)
+				ablpos.append(row)
+		elif any("NEG" in s for s in row): 
+			if any ("BCR-ABL" in s for s in row):
+				del row[2:4]
+				row[1] = 2
+				row.append(2)
+				bcrablneg.append(row)
+			else: 
+				del row[2:4]
+				row[1] = 1
+				ablneg.append(row)
+				row.append(2)
+		elif any("H2O" in s for s in row):
+			if any ("BCR-ABL" in s for s in row):
+				del row[2:4]
+				row[1] = 2
+				row.append(3)
+				bcrablh2o.append(row)
+			else: 
+				del row[2:4]
+				row[1] = 1
+				row.append(3)
+				ablh2o.append(row)
+		elif any("Standard" in s for s in row):
+			if any ("BCR-ABL" in s for s in row):
+				del row[2:4]
+				row[1] = 2
+				bcrablstd.append(row)
+			else:
+				del row[2:4]
+				row[1] = 1
+				ablstd.append(row)
+		elif any("B" in s for s in row[1]):
+			if any ("BCR-ABL" in s for s in row):
+				del row[2:4]
+				row[1] = 2
+				bcrablsample.append(row)
+			else:
+				del row[2:4]
+				row[1] = 1
+				ablsample.append(row)	
+
+resultsort(csv)
+print ablsample
