@@ -226,13 +226,20 @@ class Pi(models.Model):
 class Plate(models.Model):
     plateid = models.AutoField(primary_key=True)
     dateofrun = models.DateField(blank=True, null=True)
-    plateqcid = models.ForeignKey('Plateqc', models.DO_NOTHING, db_column='plateqcid', blank=True, null=True)
-    passfailid = models.ForeignKey(Passfail, models.DO_NOTHING, db_column='passfailid', blank=True, null=True)
-    qcreportid = models.ForeignKey('Qcreport', models.DO_NOTHING, db_column='qcreportid', blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'plate'
+
+
+class Plateqcresult(models.Model):
+	idplateqcresult = models.AutoField(primary_key=True)
+	plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
+	passfailid = models.ForeignKey(Passfail, models.DO_NOTHING, db_column='passfailid', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'plateqcresult'
 
 
 class Plate2Control(models.Model):
@@ -257,6 +264,7 @@ class Plate2Standard(models.Model):
 
 class Plateqc(models.Model):
     plateqcid = models.AutoField(primary_key=True)
+    plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
     resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
     watercheck = models.IntegerField(blank=True, null=True)
     negcheck = models.IntegerField(blank=True, null=True)
@@ -275,6 +283,7 @@ class Plateqc(models.Model):
 
 class Qcreport(models.Model):
     qcreportid = models.AutoField(primary_key=True)
+    plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
     qcreport = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -390,7 +399,7 @@ class Replicatect(models.Model):
 
 class Standardcurve(models.Model):
     standardcurveid = models.AutoField(primary_key=True)
-    standardcurvedescription = CharField(max_length=45, blank=True, null=True)
+    standardcurvedescription = models.CharField(max_length=45, blank=True, null=True)
     point1 = models.FloatField(blank=True, null=True)
     point2 = models.FloatField(blank=True, null=True)
     point3 = models.FloatField(blank=True, null=True)
