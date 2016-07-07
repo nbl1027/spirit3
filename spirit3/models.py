@@ -270,14 +270,24 @@ class Qcreport(models.Model):
         managed = False
         db_table = 'qcreport'
 
+class Statements(models.Model):
+    statementsid = models.AutoField(primary_key=True)
+    statement = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'statements'
+
 
 class Resultanalysis(models.Model):
     resultanalysisid = models.AutoField(primary_key=True)
     sampleid = models.ForeignKey('Samples', models.DO_NOTHING, db_column='sampleid', blank=True, null=True)
+    bcrcopies = models.FloatField(db_column='BCRcopies', blank=True, null=True)
     bcrablratio = models.FloatField(db_column='BCRABLratio', blank=True, null=True)  # Field name made lowercase.
     percentageratio = models.FloatField(blank=True, null=True)
     mr = models.CharField(max_length=5, blank=True, null=True)
     sensitivity = models.CharField(max_length=45, blank=True, null=True)
+    statementsid = models.ForeignKey('Statements', models.DO_NOTHING, db_column='statementsid', blank=True, null=True)
 
     class Meta:
         managed = False

@@ -274,6 +274,7 @@ class Qcreport(models.Model):
 class Resultanalysis(models.Model):
     resultanalysisid = models.AutoField(primary_key=True)
     sampleid = models.ForeignKey('Samples', models.DO_NOTHING, db_column='sampleid', blank=True, null=True)
+    bcrcopies = models.FloatField(db_column='BCRcopies', blank=True, null=True)
     bcrablratio = models.FloatField(db_column='BCRABLratio', blank=True, null=True)  # Field name made lowercase.
     percentageratio = models.FloatField(blank=True, null=True)
     mr = models.CharField(max_length=5, blank=True, null=True)
