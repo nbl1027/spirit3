@@ -18,16 +18,6 @@ class Resulttype(models.Model):
         db_table = 'resulttype'
 
 
-class Ablresutqc(models.Model):
-    ablresutqcid = models.AutoField(primary_key=True)
-    ablanalysis = models.FloatField(blank=True, null=True)
-    bcrablepos = models.CharField(max_length=45, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'ablresutqc'
-
-
 class Analysistype(models.Model):
     analysistypeid = models.AutoField(primary_key=True)
     analysistype = models.CharField(max_length=45, blank=True, null=True)
@@ -181,16 +171,6 @@ class Hospitals(models.Model):
     class Meta:
         managed = False
         db_table = 'hospitals'
-
-
-class Overablresult(models.Model):
-    overablresultid = models.AutoField(primary_key=True)
-    ablresultqcid = models.ForeignKey(Ablresutqc, models.DO_NOTHING, db_column='ablresultqcid', blank=True, null=True)
-    passfailid = models.ForeignKey('Passfail', models.DO_NOTHING, db_column='passfailid', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'overablresult'
 
 
 class Passfail(models.Model):
@@ -365,12 +345,24 @@ class Samples(models.Model):
         db_table = 'samples'
 
 
+class Ablresutqc(models.Model):
+    ablresutqcid = models.AutoField(primary_key=True)
+    sampleid = models.ForeignKey(Samples, models.DO_NOTHING, db_column='sampleid', blank=True, null=True)
+    ablanalysis = models.FloatField(blank=True, null=True)
+    totalcheck = models.FloatField(blank=True, null=True)
+    individualcheck = models.FloatField(blank=True, null=True)
+    qcresult = models.ForeignKey(Passfail, models.DO_NOTHING, db_column='passfailid', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ablresutqc'
+
+
 class Sampleseg(models.Model):
     samplesegid = models.AutoField(primary_key=True)
     sampleid = models.ForeignKey(Samples, models.DO_NOTHING, db_column='sampleid', blank=True, null=True)
     sampleresultid = models.ForeignKey(Sampleresult, models.DO_NOTHING, db_column='sampleresultid', blank=True, null=True)
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
-    ablresultqcid = models.ForeignKey(Ablresutqc, models.DO_NOTHING, db_column='ablresultqcid', blank=True, null=True)
 
     class Meta:
         managed = False
