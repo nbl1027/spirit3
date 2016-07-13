@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'spirit3',
     'markdown_deux',
+    'report_builder',
 ]
 
 MIDDLEWARE_CLASSES = [
