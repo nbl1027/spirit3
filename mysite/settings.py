@@ -38,8 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'spirit3',
-    'markdown_deux',
-    'report_builder',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -83,7 +81,7 @@ DATABASES = {
         'NAME': 'spirit3',
 	'USER': 'kirsty',
 	'PASSWORD': 'ngskirsty_201605',
-	'HOST': '10.180.103.203',
+	'HOST': '10.229.233.250',
     }
 }
 

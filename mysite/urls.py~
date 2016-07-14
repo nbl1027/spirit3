@@ -20,4 +20,5 @@ from django.conf.urls import include
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('spirit3.urls')),
+    url(r'^report_builder/', include('report_builder.urls')), 
 ]
