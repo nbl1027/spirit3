@@ -1,0 +1,16 @@
+{% extends 'spirit3/base.html' %}
+
+{% block content %}
+	<div class="post">
+		{% if patient.nhsnumber %}
+			<div class="post">
+        			<div class="date">
+					<h1>{{ patient.nhsnumber }}</h1>
+				</div>
+			<p>Patient Initials: {{ patient.initials }}</p>
+			<p>DOB : {{ patient.dob|linebreaksbr }}></p>
+		{% endif %}
+		<p>Patient Initials: {{ patient.initials }}</p>
+		<p>DOB : {{ patient.dob|linebreaksbr }}></p>
+	</div>
+{% endblock %}

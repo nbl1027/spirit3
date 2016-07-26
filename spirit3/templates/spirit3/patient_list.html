@@ -1,18 +1,14 @@
-<hmtl>
-	<head>	
-		<title>Patient List</title>
-	</head>
-	<body>
-		<div>
-			<h1><a href="">Patient List</a></h1>
-		</div>
+{% extends 'spirit3/base.html' %}
 
-		{% for patient in patient_list %}
-			<div>
-				<p>Initials: {{ patient.initials }}</p>
-				<p>NHS Number: {{ patient.nhsnumber }}</p>
-				<p>DOB : {{ patient.dob }}></p>
+{% block content %}
+	{% for patient in patient_list %}
+		<div class="post">
+        		<div class="date">
+				<p><a href="{% url 'patient_detail' pk=patient.pk %}">{{ patient.nhsnumber }}</a></p>
 			</div>
-		{% endfor %}		
-	</body>
-</html>
+			<p>Patient Initials: {{ patient.initials }}</p>
+			<p>DOB : {{ patient.dob|linebreaksbr }}></p>
+		</div>
+	{% endfor %}	
+{% endblock %}
+				
