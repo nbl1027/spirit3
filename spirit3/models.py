@@ -6,25 +6,34 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from __future__ import unicode_literals
-
+from django.utils import timezone
 from django.db import models
 
 class Resulttype(models.Model):
     resulttypeid = models.AutoField(primary_key=True)
     resulttype = models.CharField(max_length=45, blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.resulttype)
+
+
     class Meta:
         managed = False
         db_table = 'resulttype'
+
 
 
 class Analysistype(models.Model):
     analysistypeid = models.AutoField(primary_key=True)
     analysistype = models.CharField(max_length=45, blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.analysistype)
+
     class Meta:
         managed = False
         db_table = 'analysistype'
+
 
 
 class AuthGroup(models.Model):
@@ -33,6 +42,7 @@ class AuthGroup(models.Model):
     class Meta:
         managed = False
         db_table = 'auth_group'
+
 
 
 class AuthGroupPermissions(models.Model):
@@ -45,6 +55,7 @@ class AuthGroupPermissions(models.Model):
         unique_together = (('group', 'permission'),)
 
 
+
 class AuthPermission(models.Model):
     name = models.CharField(max_length=255)
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
@@ -54,6 +65,7 @@ class AuthPermission(models.Model):
         managed = False
         db_table = 'auth_permission'
         unique_together = (('content_type', 'codename'),)
+
 
 
 class AuthUser(models.Model):
@@ -73,6 +85,7 @@ class AuthUser(models.Model):
         db_table = 'auth_user'
 
 
+
 class AuthUserGroups(models.Model):
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
@@ -81,6 +94,7 @@ class AuthUserGroups(models.Model):
         managed = False
         db_table = 'auth_user_groups'
         unique_together = (('user', 'group'),)
+
 
 
 class AuthUserUserPermissions(models.Model):
@@ -92,13 +106,19 @@ class AuthUserUserPermissions(models.Model):
         db_table = 'auth_user_user_permissions'
         unique_together = (('user', 'permission'),)
 
+
+
 class Controltype(models.Model):
     controltypeid = models.AutoField(primary_key=True)
     controltype = models.CharField(max_length=45, blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.controltype)
+
     class Meta:
         managed = False
         db_table = 'controltype'
+
 
 
 class Controlresults(models.Model):
@@ -113,6 +133,9 @@ class Controlresults(models.Model):
     controlctthresh = models.FloatField(blank=True, null=True)
     controlbasestart = models.FloatField(blank=True, null=True)
     controlbaseend = models.FloatField(blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.controlresultid)
 
     class Meta:
         managed = False
@@ -133,6 +156,7 @@ class DjangoAdminLog(models.Model):
         db_table = 'django_admin_log'
 
 
+
 class DjangoContentType(models.Model):
     app_label = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
@@ -141,6 +165,7 @@ class DjangoContentType(models.Model):
         managed = False
         db_table = 'django_content_type'
         unique_together = (('app_label', 'model'),)
+
 
 
 class DjangoMigrations(models.Model):
@@ -153,6 +178,7 @@ class DjangoMigrations(models.Model):
         db_table = 'django_migrations'
 
 
+
 class DjangoSession(models.Model):
     session_key = models.CharField(primary_key=True, max_length=40)
     session_data = models.TextField()
@@ -163,19 +189,27 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
+
 class Hospitals(models.Model):
     hospitalsid = models.AutoField(primary_key=True)
     hospname = models.CharField(max_length=45, blank=True, null=True)
     hospcontact = models.CharField(max_length=45, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.hospname)
 
     class Meta:
         managed = False
         db_table = 'hospitals'
 
 
+
 class Passfail(models.Model):
     passfailid = models.AutoField(primary_key=True)
     designation = models.CharField(max_length=45, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.designation)
 
     class Meta:
         managed = False
@@ -188,15 +222,22 @@ class Patientinfo(models.Model):
     initials = models.CharField(max_length=5, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
 
+    def __str__(self):
+	return str(self.nhsnumber)
+	
     class Meta:
         managed = False
         db_table = 'patientinfo'
+
 
 
 class Pi(models.Model):
     piid = models.AutoField(primary_key=True)
     pifirst = models.CharField(max_length=45, blank=True, null=True)
     pisecond = models.CharField(max_length=45, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.pifirst)
 
     class Meta:
         managed = False
@@ -207,9 +248,14 @@ class Plate(models.Model):
     plateid = models.AutoField(primary_key=True)
     dateofrun = models.DateField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.plateid)
+	return unicode(self.dateofrun)
+
     class Meta:
         managed = False
         db_table = 'plate'
+
 
 
 class Plateqcresult(models.Model):
@@ -217,9 +263,13 @@ class Plateqcresult(models.Model):
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
     passfailid = models.ForeignKey(Passfail, models.DO_NOTHING, db_column='passfailid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.idplateqcresult)
+
     class Meta:
         managed = False
         db_table = 'plateqcresult'
+
 
 
 class Plate2Control(models.Model):
@@ -227,15 +277,22 @@ class Plate2Control(models.Model):
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
     controlresultid = models.ForeignKey(Controlresults, models.DO_NOTHING, db_column='controlresultid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.plate2controlid)
+
     class Meta:
         managed = False
         db_table = 'plate2control'
+
 
 
 class Plate2Standard(models.Model):
     plate2standardid = models.IntegerField(primary_key=True)
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
     standardresultid = models.ForeignKey('Standardresults', models.DO_NOTHING, db_column='standardresultid', blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.plate2standardid)
 
     class Meta:
         managed = False
@@ -256,6 +313,9 @@ class Plateqc(models.Model):
     slopecheck = models.IntegerField(blank=True, null=True)
     correlationcheck = models.IntegerField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.plateqcid)
+
     class Meta:
         managed = False
         db_table = 'plateqc'
@@ -266,13 +326,21 @@ class Qcreport(models.Model):
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
     qcreport = models.TextField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.qcreportid)
+
     class Meta:
         managed = False
         db_table = 'qcreport'
 
+
+
 class Statements(models.Model):
     statementsid = models.AutoField(primary_key=True)
     statement = models.CharField(max_length=45, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.statementsid)
 
     class Meta:
         managed = False
@@ -289,18 +357,26 @@ class Resultanalysis(models.Model):
     sensitivity = models.CharField(max_length=45, blank=True, null=True)
     statementsid = models.ForeignKey('Statements', models.DO_NOTHING, db_column='statementsid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.resultanalysisid)
+
     class Meta:
         managed = False
         db_table = 'resultanalysis'
+
 
 
 class Resultreports(models.Model):
     resultreportsid = models.AutoField(primary_key=True)
     resultreport = models.TextField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.resultreportsid)
+
     class Meta:
         managed = False
         db_table = 'resultreports'
+
 
 
 class Sampleinfo(models.Model):
@@ -309,9 +385,13 @@ class Sampleinfo(models.Model):
     recieved = models.DateTimeField(blank=True, null=True)
     analysistypeid = models.ForeignKey(Analysistype, models.DO_NOTHING, db_column='analysistypeid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.sampleinfoid)
+
     class Meta:
         managed = False
         db_table = 'sampleinfo'
+
 
 
 class Sampleresult(models.Model):
@@ -326,18 +406,26 @@ class Sampleresult(models.Model):
     samplebasestart = models.FloatField(blank=True, null=True)
     samplebaseend = models.FloatField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.sampleresultid)
+
     class Meta:
         managed = False
         db_table = 'sampleresult'
+
 
 
 class Samplestatus(models.Model):
     samplestatusid = models.AutoField(primary_key=True)
     samplestatus = models.CharField(max_length=45, blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.samplestatus)
+
     class Meta:
 	managed = False
 	db_table = 'samplestatus'
+
 
 
 class Samples(models.Model):
@@ -350,9 +438,13 @@ class Samples(models.Model):
     resultreportsid = models.ForeignKey(Resultreports, models.DO_NOTHING, db_column='resultreportsid', blank=True, null=True)
     samplestatusid = models.ForeignKey(Samplestatus, models.DO_NOTHING, db_column='samplestatusid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.sampleid)
+
     class Meta:
         managed = False
         db_table = 'samples'
+
 
 
 class Ablresutqc(models.Model):
@@ -363,9 +455,13 @@ class Ablresutqc(models.Model):
     individualcheck = models.FloatField(blank=True, null=True)
     qcresult = models.ForeignKey(Passfail, models.DO_NOTHING, db_column='passfailid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.ablresutqcid)
+
     class Meta:
         managed = False
         db_table = 'ablresutqc'
+
 
 
 class Sampleseg(models.Model):
@@ -374,18 +470,27 @@ class Sampleseg(models.Model):
     sampleresultid = models.ForeignKey(Sampleresult, models.DO_NOTHING, db_column='sampleresultid', blank=True, null=True)
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.samplesegid)
+
     class Meta:
         managed = False
         db_table = 'sampleseg'
+
 
 	
 class Standardtype(models.Model):
     standardtypeid = models.AutoField(primary_key=True)
     standardtype = models.CharField(max_length=45, blank=True, null=True)
     
+    def __unicode__(self):
+        return unicode(self.standardtype)
+
     class Meta:
         managed = False
         db_table = 'standardtype'
+
+
 
 class Replicatect(models.Model):
     replicatectid = models.AutoField(primary_key=True)
@@ -394,6 +499,9 @@ class Replicatect(models.Model):
     resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
     replicatect = models.FloatField(blank=True, null=True)
          
+    def __unicode__(self):
+        return unicode(self.replicatectid)
+
     class Meta:
         managed = False
         db_table = 'replicatect'
@@ -417,9 +525,13 @@ class Standardcurve(models.Model):
     point13 = models.FloatField(blank=True, null=True)
     point14 = models.FloatField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.standardcurvedescription)
+
     class Meta:
         managed = False
         db_table = 'standardcurve'
+
 
 
 class Standardcurvecriteria(models.Model):
@@ -431,10 +543,14 @@ class Standardcurvecriteria(models.Model):
     intercept = models.FloatField(blank=True, null=True)
     baseline3 = models.FloatField(blank=True, null=True)
     posdeltact = models.FloatField(blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.standardcurvecriteriaid)
          
     class Meta:
         managed = False
         db_table = 'standardcurvecriteria'
+
 
 
 class Standardresults(models.Model):
@@ -450,6 +566,9 @@ class Standardresults(models.Model):
     standardbasestart = models.FloatField(blank=True, null=True)
     standardbaseend = models.FloatField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.standardresultid)
+
     class Meta:
         managed = False
         db_table = 'standardresults'
@@ -462,6 +581,9 @@ class Users(models.Model):
     secondname = models.CharField(max_length=45, blank=True, null=True)
     username = models.CharField(max_length=45, blank=True, null=True)
     password = models.CharField(max_length=45, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.userid)
 
     class Meta:
         managed = False
