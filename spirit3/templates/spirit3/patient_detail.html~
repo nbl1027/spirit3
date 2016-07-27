@@ -2,14 +2,14 @@
 
 {% block content %}
 	<div class="post">
-		{% if patient.pk %}
+		{% for patient in patient_detail %}
 			<div class="post">
         			<div class="date">
 					<h1>{{ patient.nhsnumber }}</h1>
 				</div>
 			<p>Patient Initials: {{ patient.initials }}</p>
 			<p>DOB : {{ patient.dob|linebreaksbr }}></p>
-		{% endif %}
+		{% end for %}
 		<p>Patient Initials: {{ patient.initials }}</p>
 		<p>DOB : {{ patient.dob|linebreaksbr }}></p>
 	</div>
