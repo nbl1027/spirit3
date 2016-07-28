@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Patientinfo
 from spirit3.forms import PatientForm
-from django.contrib.auth import authenticate, login 
+from django.contrib.auth import authenticate, login, logout 
 from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required
 
 
 def patient_list(request):
@@ -36,7 +37,7 @@ def user_login(request):
 		if user:
 			if user.is_active:
 				login(request, user)
-				return redirect('home')
+				return HttpResponseRedirect('/')
 			else:
 				return HttpResponse("Your SPIRIT 3 account is disabled")
 
@@ -46,6 +47,14 @@ def user_login(request):
 	else:
 		return render(request, 'spirit3/login.html',{})
 
+##Python decorators 
+
+@login_required
 def restricted(request):	
 	return HttpResponse("Since you're logged in you can see this text")
+
+@login_required
+def user_logout(request):
+	logout(request)
+	return HttpResponseRedirect('home')
 
