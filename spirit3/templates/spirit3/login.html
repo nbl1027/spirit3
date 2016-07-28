@@ -1,0 +1,15 @@
+{% extends 'spirit3/base.html' %}
+
+{% block content %}
+<body>
+	<h1> Login to SPIRIT 3 </h1>
+	<form id="login_form" method="post">
+		{% csrf_token %}
+		Username: <input type="text" name="username" value="" size="50" />
+		<br />
+		Password: <input type="password" name="password" value="" size="50" />
+		<br />
+		<input type="submit" value="submit" />
+	</form>
+</body>
+{% endblock %}

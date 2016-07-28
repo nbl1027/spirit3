@@ -11,9 +11,9 @@
 	<body>
 		<p></p>
 		<div class="page-header">
-			<h1><a href="/">Patient List</a></h1>
 			<img src="{% static 'images/logo.jpeg' %}"/>
 		</div>
+		<h1> SPIRIT 3 </h1>
 		<p></p>
 		<div class="content container">
     			<div class="row">

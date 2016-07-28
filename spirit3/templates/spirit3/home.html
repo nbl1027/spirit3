@@ -1,6 +1,13 @@
 {% extends 'spirit3/base.html' %}
 
 {% block content %}
+{% if user.is_authenticted %}
+	<h1> Welcome.. {{ user.username }}</h1>
+{% else %}
+	<h1> Welcome.. Please Login </h1>
+{% endif %}
+<br />
+<a href="{% url 'login' %}">Login</a><br />
 <p><a href="{% url 'patient_list' %}">Patient List</a></p>
 <p><a href="{%url 'add_patient' %}">Add Patient</a></p>
 {% endblock %}
