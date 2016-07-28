@@ -1,11 +1,12 @@
 from django import forms
+from django.db import models
 from .models import Patientinfo
 
-class PatientForm(forms.Modelform):
+class PatientForm(forms.ModelForm):
     nhsnumber = forms.IntegerField(help_text="Please enter nhs number")
-    #initials = forms.CharField(help_text="Please enter patient initials"))
-    #dob = forms.DateField(help_text="Please enter patient D.O.B")
+    initials = forms.CharField(help_text="Please enter patient initials")
+    dob = forms.DateField(help_text="Please enter patient D.O.B")
 
     class Meta:
         model = Patientinfo
-	fields = ('nhsnumber', 'initals', 'dob')
+	fields = ('nhsnumber', 'initials', 'dob')

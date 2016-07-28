@@ -8,6 +8,7 @@
 from __future__ import unicode_literals
 from django.utils import timezone
 from django.db import models
+from django.template.defaultfilters import slugify
 
 class Resulttype(models.Model):
     resulttypeid = models.AutoField(primary_key=True)
@@ -221,9 +222,14 @@ class Patientinfo(models.Model):
     nhsnumber = models.IntegerField(blank=True, null=True)
     initials = models.CharField(max_length=5, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
+    slug = models.SlugField()
 
-    def __str__(self):
-	return str(self.nhsnumber)
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.patientinfoid)
+	super(Patientinfo, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+	return unicode(self.nhsnumber)
 	
     class Meta:
         managed = False
@@ -357,18 +363,26 @@ class Resultanalysis(models.Model):
     sensitivity = models.CharField(max_length=45, blank=True, null=True)
     statementsid = models.ForeignKey('Statements', models.DO_NOTHING, db_column='statementsid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.resultanalysisid)
+
     class Meta:
         managed = False
         db_table = 'resultanalysis'
+
 
 
 class Resultreports(models.Model):
     resultreportsid = models.AutoField(primary_key=True)
     resultreport = models.TextField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.resultreportsid)
+
     class Meta:
         managed = False
         db_table = 'resultreports'
+
 
 
 class Sampleinfo(models.Model):
@@ -377,9 +391,13 @@ class Sampleinfo(models.Model):
     recieved = models.DateTimeField(blank=True, null=True)
     analysistypeid = models.ForeignKey(Analysistype, models.DO_NOTHING, db_column='analysistypeid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.sampleinfoid)
+
     class Meta:
         managed = False
         db_table = 'sampleinfo'
+
 
 
 class Sampleresult(models.Model):
@@ -394,18 +412,26 @@ class Sampleresult(models.Model):
     samplebasestart = models.FloatField(blank=True, null=True)
     samplebaseend = models.FloatField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.sampleresultid)
+
     class Meta:
         managed = False
         db_table = 'sampleresult'
+
 
 
 class Samplestatus(models.Model):
     samplestatusid = models.AutoField(primary_key=True)
     samplestatus = models.CharField(max_length=45, blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.samplestatus)
+
     class Meta:
 	managed = False
 	db_table = 'samplestatus'
+
 
 
 class Samples(models.Model):
@@ -418,9 +444,13 @@ class Samples(models.Model):
     resultreportsid = models.ForeignKey(Resultreports, models.DO_NOTHING, db_column='resultreportsid', blank=True, null=True)
     samplestatusid = models.ForeignKey(Samplestatus, models.DO_NOTHING, db_column='samplestatusid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.sampleid)
+
     class Meta:
         managed = False
         db_table = 'samples'
+
 
 
 class Ablresutqc(models.Model):
@@ -431,9 +461,13 @@ class Ablresutqc(models.Model):
     individualcheck = models.FloatField(blank=True, null=True)
     qcresult = models.ForeignKey(Passfail, models.DO_NOTHING, db_column='passfailid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.ablresutqcid)
+
     class Meta:
         managed = False
         db_table = 'ablresutqc'
+
 
 
 class Sampleseg(models.Model):
@@ -442,18 +476,27 @@ class Sampleseg(models.Model):
     sampleresultid = models.ForeignKey(Sampleresult, models.DO_NOTHING, db_column='sampleresultid', blank=True, null=True)
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.samplesegid)
+
     class Meta:
         managed = False
         db_table = 'sampleseg'
+
 
 	
 class Standardtype(models.Model):
     standardtypeid = models.AutoField(primary_key=True)
     standardtype = models.CharField(max_length=45, blank=True, null=True)
     
+    def __unicode__(self):
+        return unicode(self.standardtype)
+
     class Meta:
         managed = False
         db_table = 'standardtype'
+
+
 
 class Replicatect(models.Model):
     replicatectid = models.AutoField(primary_key=True)
@@ -462,6 +505,9 @@ class Replicatect(models.Model):
     resulttypeid = models.ForeignKey(Resulttype, models.DO_NOTHING, db_column='resulttypeid', blank=True, null=True)
     replicatect = models.FloatField(blank=True, null=True)
          
+    def __unicode__(self):
+        return unicode(self.replicatectid)
+
     class Meta:
         managed = False
         db_table = 'replicatect'
@@ -485,9 +531,13 @@ class Standardcurve(models.Model):
     point13 = models.FloatField(blank=True, null=True)
     point14 = models.FloatField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.standardcurvedescription)
+
     class Meta:
         managed = False
         db_table = 'standardcurve'
+
 
 
 class Standardcurvecriteria(models.Model):
@@ -499,10 +549,14 @@ class Standardcurvecriteria(models.Model):
     intercept = models.FloatField(blank=True, null=True)
     baseline3 = models.FloatField(blank=True, null=True)
     posdeltact = models.FloatField(blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.standardcurvecriteriaid)
          
     class Meta:
         managed = False
         db_table = 'standardcurvecriteria'
+
 
 
 class Standardresults(models.Model):
@@ -518,6 +572,9 @@ class Standardresults(models.Model):
     standardbasestart = models.FloatField(blank=True, null=True)
     standardbaseend = models.FloatField(blank=True, null=True)
 
+    def __unicode__(self):
+        return unicode(self.standardresultid)
+
     class Meta:
         managed = False
         db_table = 'standardresults'
@@ -530,6 +587,9 @@ class Users(models.Model):
     secondname = models.CharField(max_length=45, blank=True, null=True)
     username = models.CharField(max_length=45, blank=True, null=True)
     password = models.CharField(max_length=45, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.userid)
 
     class Meta:
         managed = False

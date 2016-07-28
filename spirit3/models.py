@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 from django.utils import timezone
 from django.db import models
 
+
 class Resulttype(models.Model):
     resulttypeid = models.AutoField(primary_key=True)
     resulttype = models.CharField(max_length=45, blank=True, null=True)

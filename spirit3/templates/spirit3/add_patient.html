@@ -3,10 +3,10 @@
 {% block content %}
 <body>
 	<h1> Add a Patient </h>
-	<form action="/spirit3/add_patient/" method="post">
-		{% csrf_token %}
-		{{ form }}
-		<input type="submit" value="Create Patient" />
-	</form>
+		<form role="form" method="post">
+  		{% csrf_token %}
+ 		{{ form }}
+  		<input type="submit" value="Create Patient" />
+		</form>
 </body>
 {% endblock %}

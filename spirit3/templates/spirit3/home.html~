@@ -2,5 +2,4 @@
 
 {% block content %}
 <p><a href="{% url 'patient_list' %}">Patient List</a></p>
-<p><a href="{% url 'add_patient' %}">Add a New Patient</a></p>
 {% endblock %}

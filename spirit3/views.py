@@ -1,7 +1,6 @@
-from django.shortcuts import render
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Patientinfo
-#from .forms import *
+from spirit3.forms import PatientForm
 
 
 def patient_list(request):
@@ -20,9 +19,9 @@ def add_patient(request):
 		form = PatientForm(request.POST)
 		if form.is_valid():
 			form.save(commit=True)
-			return index(request)
+			return redirect('home')
 		else:
 			print form.errors
 	else:
-		form = CategoryForm()
+		form = PatientForm()
 	return render(request, 'spirit3/add_patient.html', {'form':form})
