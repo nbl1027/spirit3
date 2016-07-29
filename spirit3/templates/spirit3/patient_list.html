@@ -1,6 +1,7 @@
 {% extends 'spirit3/base.html' %}
 
 {% block content %}
+{% if user.is_authenticated %}
 	{% for patient in patient_list %}
 		<div class="post">
         		<div class="date">
@@ -10,5 +11,9 @@
 			<p>DOB : {{ patient.dob|linebreaksbr }}></p>
 		</div>
 	{% endfor %}	
+{% else %}
+	<h1> Welcome.. Please Login </h1>
+	<a href="{% url 'login' %}">Login</a><br />
+{% endif %}
 {% endblock %}
 				

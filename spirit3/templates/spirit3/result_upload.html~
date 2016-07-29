@@ -2,17 +2,16 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-	<h1> Result Upload </h>
+	<h1> Add a Patient </h>
 		<form role="form" method="post">
   		{% csrf_token %}
  		{{ form }}
-  		<input type="submit" value="Upload" />
+  		<input type="submit" value="Create Patient" />
 		</form>
-		</div>
-	{% endfor %}	
+	
 {% else %}
 	<h1> Welcome.. Please Login </h1>
 	<a href="{% url 'login' %}">Login</a><br />
+
 {% endif %}
 {% endblock %}
-				

@@ -7,7 +7,8 @@ urlpatterns = [
 	url(r'^patientdetail/(?P<pk>\d+)/$', views.patient_detail, name='patient_detail'), 
 	url(r'^add_patient/$', views.add_patient, name='add_patient'),
 	url(r'^login/$', views.user_login, name='login'), 
-	url(r'^restricted/', views.restricted, name='restricted'),
+	url(r'^restricted/$', views.restricted, name='restricted'),
+	url(r'^logout/$', views.user_logout, name='logout'),
 ]
 
 
