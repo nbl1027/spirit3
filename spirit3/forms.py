@@ -13,4 +13,5 @@ class PatientForm(forms.ModelForm):
 
 
 class ResultUpload(forms.Form):
-	file = forms.FileField()
+	results = forms.FileField()
+

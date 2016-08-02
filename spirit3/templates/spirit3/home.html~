@@ -9,8 +9,7 @@
 	
 {% else %}
 	<h1> Welcome.. Please Login </h1>
+	<a href="{% url 'login' %}">Login</a><br />
+
 {% endif %}
-<br />
-<a href="{% url 'login' %}">Login</a><br />
-<p><a href="{%url 'add_patient' %}">Add Patient</a></p>
 {% endblock %}

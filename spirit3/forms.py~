@@ -12,5 +12,6 @@ class PatientForm(forms.ModelForm):
 	fields = ('nhsnumber', 'initials', 'dob')
 
 
-class ResultUpload(forms.Form)
-	file = forms.FileField()
+class ResultUpload(forms.Form):
+	csv = forms.FileField()
+

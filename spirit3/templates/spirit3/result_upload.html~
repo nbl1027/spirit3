@@ -1,17 +1,18 @@
 {% extends 'spirit3/base.html' %}
 
 {% block content %}
+<body>
 {% if user.is_authenticated %}
-	<h1> Add a Patient </h>
+	<h1> Result Upload </h>
 		<form role="form" method="post">
   		{% csrf_token %}
  		{{ form }}
-  		<input type="submit" value="Create Patient" />
+  		<input type="submit" value="Upload" />
 		</form>
-	
 {% else %}
 	<h1> Welcome.. Please Login </h1>
 	<a href="{% url 'login' %}">Login</a><br />
-
 {% endif %}
+</body>
 {% endblock %}
+

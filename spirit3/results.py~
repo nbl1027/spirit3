@@ -200,11 +200,11 @@ sampleinsert = ("""
 
 ##**** Execution script ******
 #Allows user to select a results file and reads the CSV
-#Tk().withdraw()
-#filename = askopenfilename()
-#f = open(filename)
-#csv_f = csv.reader(f)
-#csv = [row for row in csv_f]
+Tk().withdraw()
+filename = askopenfilename()
+f = open(filename)
+csv_f = csv.reader(f)
+csv = [row for row in csv_f]
 	
 
 #Finds the date of the plate run and adds to database
