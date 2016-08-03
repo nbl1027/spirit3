@@ -13,7 +13,9 @@ standardresults = []
 bcrablsample = []
 ablsample = []
 
-
+#***** Database Connection & Cursor *****
+cnx = mysql.connector.connect(user='kirsty', password='ngskirsty_201605', host='10.229.233.250', database = 'spirit3')
+cursor = cnx.cursor()
 
 
 #***** SQL statements for use in script ******
@@ -67,6 +69,9 @@ def platedate(csv):
 
 #Function sorts the results in the csv file into POS/NEG/H2O/Standard/Sample and ABL/BCRABL
 def resultsort(csv):
+	controls = []
+	standards = []
+	samples = []
 	if csv:
 		for row in csv:
 			if any("POS" in s for s in row):
@@ -186,6 +191,7 @@ def standardsort(standard):
 	abl = [] 
 	bcr = []
 	gus = []
+	standardresults = []
 	for row in standard:
 		if row[1] == 2:
 			bcr.append(row)
@@ -208,6 +214,7 @@ def standardsort(standard):
 		for row in gus:
 			standardresults.append(row)
 	for row in standardresults:
+		print row
 		if len(row) == 11:
 			del row[2]
 
@@ -233,10 +240,7 @@ def insertsamples(samples):
 		for result in samples:
 			sampleid = result[1]
 			del result[1]
-			print result
-			print sampleid
 			cursor.execute(sampleinsert1, result)
 			cursor.execute(sampleinsert2, (sampleid,))
 	cnx.commit()
-		
 

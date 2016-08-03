@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db import connection, transaction
-from spirit3.functions import *
+from spirit3.resultentry import *
 
 
 #***** Database Connection & Cursor *****
@@ -24,18 +24,9 @@ cursor = cnx.cursor()
 def handle_uploaded_file(results):
 		csv_f = csv.reader(results)
 		plateresult = [row for row in csv_f]
-		platedate(plateresult)
-		resultsort(plateresult)
-		standardsort(standards)
-		for row in controls:
-			if len(row) == 11:
-				del row[2]
-		for row in samples:
-			if len(row) == 11:
-				del row[2]
-		insertcontrols(controls)
-		insertstandards(standardresults)
-		insertsamples(samples)
+		resultentry(plateresult)
+		plateqc(plateresult)
+
 
 #****** Views ********
 
@@ -110,4 +101,3 @@ def restricted(request):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/')
-
