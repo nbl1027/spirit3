@@ -8,7 +8,7 @@
 from __future__ import unicode_literals
 from django.utils import timezone
 from django.db import models
-from django.template.defaultfilters import slugify
+
 
 class Resulttype(models.Model):
     resulttypeid = models.AutoField(primary_key=True)
@@ -222,14 +222,9 @@ class Patientinfo(models.Model):
     nhsnumber = models.IntegerField(blank=True, null=True)
     initials = models.CharField(max_length=5, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
-    slug = models.SlugField()
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.patientinfoid)
-	super(Patientinfo, self).save(*args, **kwargs)
-
-    def __unicode__(self):
-	return unicode(self.nhsnumber)
+    def __str__(self):
+	return str(self.nhsnumber)
 	
     class Meta:
         managed = False

@@ -321,11 +321,23 @@ class Plateqc(models.Model):
         managed = False
         db_table = 'plateqc'
 
+class Reportstatus(models.Model):
+    reportstatusid = models.AutoField(primary_key=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.reportstatusid)
+
+    class Meta:
+        managed = False
+        db_table = 'reportstatus'
+
 
 class Qcreport(models.Model):
     qcreportid = models.AutoField(primary_key=True)
     plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
     qcreport = models.TextField(blank=True, null=True)
+    reportstatusid = models.ForeignKey(Reportstatus, models.DO_NOTHING, db_column='reportstatusid', blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.qcreportid)
