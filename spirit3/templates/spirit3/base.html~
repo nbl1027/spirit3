@@ -13,7 +13,6 @@
 		<div class="page-header">
 			<img src="{% static 'images/logo.jpeg' %}"/>
 		</div>
-		<h1> SPIRIT 3 </h1>
 		<p></p>
 		<div class="content container">
     			<div class="row">

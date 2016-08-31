@@ -97,7 +97,7 @@ IDselect = ("""
 	   """)
 
 #Seletcs the Sample Results
-sampleresult = (""" 
+resultsample = (""" 
 		SELECT * FROM sampleresult WHERE sampleresultid = %s;
 		""")
 
@@ -596,12 +596,12 @@ def sampleresult(csv):
 			IDresults.append(list(row))
 		for row in IDresults:
 			IDdict[row[2]] = row[1]
-		sampleresultid.append(row[2])
-		sampleid.append(row[1])
+			sampleresultid.append(row[2])
+			sampleid.append(row[1])
 
 	#Selects sample results from the DB and seperates
 		for row in sampleresultid:
-			cursor.execute(sampleresult, (row,))
+			cursor.execute(resultsample, (row,))
 			pick = list(cursor.fetchone())
 			sampleresults.append(pick)
 		sampleids = removeduplicates(sampleid)
@@ -614,10 +614,10 @@ def sampleresult(csv):
 				bcrsample.append(result)
 
 	#Carries out sample result ABLQC
-		for ids in ids:
+		for ids in sampleids:
 			temp = []
 			temp2 = []
-			for row in result:
+			for row in ablgussample:
 				if row[10] == ids:
 					temp.append(row[5])
 			yes = sum(temp)

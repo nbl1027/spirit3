@@ -4,14 +4,15 @@ import mysql.connector
 from datetime import datetime
 import numpy as np
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Patientinfo
+from .models import Patientinfo, Plate
 from spirit3.forms import PatientForm, ResultUpload
 from django.contrib.auth import authenticate, login, logout 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db import connection, transaction
 from spirit3.resultentry import *
-
+from spirit3.qcreport import *
+from io import BytesIO
 
 #***** Database Connection & Cursor *****
 cnx = mysql.connector.connect(user='kirsty', password='ngskirsty_201605', host='10.229.233.250', database = 'spirit3')
@@ -26,11 +27,24 @@ def handle_uploaded_file(results):
 		plateresult = [row for row in csv_f]
 		resultentry(plateresult)
 		plateqc(plateresult)
-
+		sampleresult(plateresult)
+		qcreport(plateresult)
+		
 
 #****** Views ********
 
-#Displats a list of patients
+##Report View
+def print_users(request):
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = 'attachment; filename="My Users.pdf"'
+	buffer = BytesIO()
+	report = MyPrint(buffer, 'A4')
+	pdf = report.print_users()
+	response.write(pdf)
+	return HttpResponse(pdf)
+	pdf.save()
+
+#Displays a list of patients
 def patient_list(request):
 	patient_list = Patientinfo.objects.all()
 	return render(request, 'spirit3/patient_list.html', {'patient_list': patient_list}) 
@@ -101,3 +115,4 @@ def restricted(request):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/')
+

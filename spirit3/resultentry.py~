@@ -97,7 +97,7 @@ IDselect = ("""
 	   """)
 
 #Seletcs the Sample Results
-sampleresult = (""" 
+resultsample = (""" 
 		SELECT * FROM sampleresult WHERE sampleresultid = %s;
 		""")
 
@@ -576,6 +576,7 @@ def plateqc(csv):
 
 #Function calculates the analysis of sample results from the results entered
 def sampleresult(csv):
+
 	#Variables used in the funcion 
 	IDresults = []
 	IDdict = {}
@@ -586,6 +587,7 @@ def sampleresult(csv):
 	bcrsample = []
 	ablgusqcresult = []
 	bcrablresult = []
+
 	#Selects the samples IDs and result IDs from the DB
 	if csv:
 		cursor.execute(IDselect)
@@ -594,11 +596,12 @@ def sampleresult(csv):
 			IDresults.append(list(row))
 		for row in IDresults:
 			IDdict[row[2]] = row[1]
-		sampleresultid.append(row[2])
-		sampleid.append(row[1])
+			sampleresultid.append(row[2])
+			sampleid.append(row[1])
+
 	#Selects sample results from the DB and seperates
 		for row in sampleresultid:
-			cursor.execute(sampleresult, (row,))
+			cursor.execute(resultsample, (row,))
 			pick = list(cursor.fetchone())
 			sampleresults.append(pick)
 		sampleids = removeduplicates(sampleid)
@@ -609,11 +612,12 @@ def sampleresult(csv):
 				ablgussample.append(result)
 			else:
 				bcrsample.append(result)
+
 	#Carries out sample result ABLQC
-		for ids in ids:
+		for ids in sampleids:
 			temp = []
 			temp2 = []
-			for row in result:
+			for row in ablgussample:
 				if row[10] == ids:
 					temp.append(row[5])
 			yes = sum(temp)
@@ -635,12 +639,14 @@ def sampleresult(csv):
 			else:
 				temp2.append(2)
 			ablgusqcresult.append(temp2)
+
 	#Carries our BCR ABL analysis
 		for ids in sampleids:
 			temp = []
 			temp2 = []
 			temp3 = []
 			for row in bcrsample:
+				print row
 				if row[10] == ids:
 					temp.append(row[5])
 					temp3.append(row[3])
@@ -712,11 +718,13 @@ def sampleresult(csv):
 					if len(temp2) == 6:
 						temp2.append(19)
 			bcrablresult.append(temp2)
+	
 	#Inputs Results into Database 
 		for result in ablgusqcresult:
 			cursor.execute(insertablgusqc, result)
 		for result in bcrablresult:
 			cursor.execute(insertbcrresult, result)
+
 	#Commits results to database
 		cnx.commit() 
 

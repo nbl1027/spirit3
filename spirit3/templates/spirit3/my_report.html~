@@ -1,0 +1,15 @@
+{% extends 'spirit3/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+	<h1 class="chart-header">{{ report.pie_chart.title }}</h1>
+	<div class="chart-container">
+		{{ report.pie_chart }}
+	</div>
+	
+{% else %}
+	<h1> Welcome.. Please Login </h1>
+	<a href="{% url 'login' %}">Login</a><br />
+
+{% endif %}
+{% endblock %}
