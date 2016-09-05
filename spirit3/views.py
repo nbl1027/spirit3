@@ -30,19 +30,17 @@ def handle_uploaded_file(results):
 		sampleresult(plateresult)
 		qcreport(plateresult)
 		
+		
 
 #****** Views ********
 
 ##Report View
-def print_users(request):
-	response = HttpResponse(content_type='application/pdf')
-	response['Content-Disposition'] = 'attachment; filename="My Users.pdf"'
-	buffer = BytesIO()
-	report = MyPrint(buffer, 'A4')
-	pdf = report.print_users()
-	response.write(pdf)
-	return HttpResponse(pdf)
-	pdf.save()
+def qc_review(request):
+	with open("plateqcreport.pdf", "rb") as pdf:
+		response = HttpResponse(pdf.read(), content_type="application/pdf")
+		response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+		return response
+	pdf.closed
 
 #Displays a list of patients
 def patient_list(request):
@@ -97,7 +95,7 @@ def result_upload(request):
 		form = ResultUpload(request.POST, request.FILES)
 		if form.is_valid():
 			handle_uploaded_file(request.FILES['results'])
-			return HttpResponseRedirect('/')
+			return HttpResponseRedirect('/qc_review')
 		else:
 			print form.errors
 	else:

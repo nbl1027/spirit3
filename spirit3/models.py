@@ -450,6 +450,10 @@ class Samples(models.Model):
     hospitalsid = models.ForeignKey(Hospitals, models.DO_NOTHING, db_column='hospitalsid', blank=True, null=True)
     resultreportsid = models.ForeignKey(Resultreports, models.DO_NOTHING, db_column='resultreportsid', blank=True, null=True)
     samplestatusid = models.ForeignKey(Samplestatus, models.DO_NOTHING, db_column='samplestatusid', blank=True, null=True)
+    taken = models.DateTimeField(blank=True, null=True)
+    recieved = models.DateTimeField(blank=True, null=True)
+    activated = models.DateTimeField(blank=True, null=True)
+    authorised = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.sampleid)

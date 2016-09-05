@@ -3,7 +3,7 @@
 import mysql.connector
 from reportlab.lib import colors, utils
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Image, Paragraph, Frame, Spacer
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Image, Paragraph, Frame, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.units import inch
@@ -47,6 +47,13 @@ aresults = []
 ablqc = []
 bcrstate = []
 sampleauth = []
+stdcurve = []
+ablcur = []
+bcrcur = []
+repct = []
+ablrep = []
+bcrrep = []
+replicatect = []
 
 #***** SQL statements for use in script ******
 
@@ -99,6 +106,11 @@ passfailselect = ("""
 def qcreport(csv):
 	
 	if csv: 
+
+		#Connects to the DB 
+		cnx = mysql.connector.connect(user='kirsty', password='ngskirsty_201605', host='10.229.233.250', database = 'spirit3')
+		cursor = cnx.cursor()
+
 		#Selects plateid and date of run from the DB 
 		cursor.execute(plateidselect)
 		platei = str(cursor.fetchone())
@@ -260,7 +272,35 @@ def qcreport(csv):
 				pick[1] = rtype
 				pick[0] = ctype
 				bcrcntrl.append(pick)
+	
+		#*** Selects the STD Curve QC calc data and sorts ***
 
+		cursor.execute(""" SELECT * FROM standardcurvecriteria WHERE plateid = (SELECT plateid FROM plate ORDER BY plateid 					DESC LIMIT 1);""")
+		curve = cursor.fetchall()
+		for row in curve:
+			stdcurve.append(list(row))
+		
+		for row in stdcurve:
+			if row[2] == 3 or row[2] == 4:
+				ablcur.append(row[3:])
+			else:
+				bcrcur.append(row[3:])
+
+		#*** Selects the Replicate CT QC calc data and sorts ***
+
+		cursor.execute(""" SELECT * FROM replicatect WHERE plateid = (SELECT plateid FROM plate ORDER BY plateid DESC LIMIT 					1);""")
+		rep = cursor.fetchall()
+		for row in rep:
+			repct.append(list(row))
+
+		for row in repct:
+			temp = []
+			temp.append(row[2])
+			temp.append(row[4])
+			if row[3] == 3 or row[3] == 4:
+				ablrep.append(temp)
+			else:
+				bcrrep.append(temp)
 
 
 		#***** Table creation for PDF  ******
@@ -273,9 +313,13 @@ def qcreport(csv):
 
 		authhead = ['', 'H2O Check', 'Neg Check', 'Threshold Setting', 'Baseline Setting', 'POS Control (deltaCt<0.5)', 'STD Curve 20 or 50', 'STD Curve Points', 'Slope >= 3.2 <=3.6', 'Correlation >= 0.98']
 
-		samplehead = ['Sample', 'ABL Quant', 'ABL QC', 'BCR-ABL']
+		samplehead = ['Sample', 'ABL/GUS Quant', 'ABL/GUS QC', 'BCR-ABL']
 
 		resulttitle = ['Type', 'Result Type', 'Well', 'Ct', 'Ct Mean', 'Quantity', 'Quantity Mean', 'Ct Threshold', 'Base Start', 'Base End']
+
+		repcthead = ['STD Points', 'ABL/GUS Replicate Ct', 'BCR-ABL Replicate Ct']
+
+		stdhead = ['Slope', 'Correlation', 'Intercept', 'Baseline -3', 'Pos Delta Ct']
 
 		#Creates summary table 
 		plateresult = []
@@ -335,6 +379,61 @@ def qcreport(csv):
 		qcsummary = [[authorisationtable, sampleqctable]]
 		shell_table = Table(qcsummary)
 		shell_table.setStyle(TableStyle([('VALIGN', (0,0), (-1,-1,), 'TOP')]))
+
+		#Creates Replicate CT result table
+
+		replicatect.append(repcthead)
+		count = 0	
+		for row in ablrep:
+			temp = []
+			stanid = standardtype.get(row[0])
+			temp.append(stanid)
+			temp.append(row[1])
+			temp.append(bcrrep[count][1])
+			replicatect.append(temp)
+			count += 1
+		
+		replicatecttable = Table(replicatect, colWidths=(0.60*inch, 1*inch, 1*inch), hAlign='LEFT')
+		replicatecttable.setStyle(TableStyle([('BACKGROUND',(1,1),(-2,-2),colors.white), 
+	               			('TEXTCOLOR',(0,0),(1,-1),colors.black),
+					('FONTSIZE', (0,0), (-1,-1), 6), 
+					('FONTNAME', (0,0), (2,0), 'Helvetica-Bold'),
+		       			('INNERGRID',(0,0),(-1,-1), 0.25, colors.black),
+					('BOX', (0,0), (-1,-1), 0.25, colors.black),
+					]))
+
+		#Creates STD Curve criteria result table
+		curvetab = []
+		count = 0
+		curhead = ['', 'ABL/GUS', 'BCR-ABL']
+		curvetab.append(curhead)
+		for row in stdhead:
+			temp = []
+			temp.append(row)
+			for row in ablcur:
+				uu = row[count]
+				temp.append(uu)
+			for row in bcrcur:
+				yy = row[count]
+				temp.append(yy)
+			curvetab.append(temp)
+			count += 1
+	
+		standardcurvetable = Table(curvetab, colWidths=(0.60*inch, 1*inch, 1*inch), hAlign='RIGHT')
+		standardcurvetable.setStyle(TableStyle([('BACKGROUND',(1,1),(-2,-2),colors.white), 
+	               			('TEXTCOLOR',(0,0),(1,-1),colors.black),
+					('FONTSIZE', (0,0), (-1,-1), 6), 
+					('FONTNAME', (0,0), (2,0), 'Helvetica-Bold'),
+					('FONTNAME', (0,0), (0,5), 'Helvetica-Bold'),
+		        		('INNERGRID',(0,0),(-1,-1), 0.25, colors.black),
+					('BOX', (0,0), (-1,-1), 0.25, colors.black),
+					]))
+
+
+		#Creates the Curve and Replicate Table
+		qccalc = [[replicatecttable, standardcurvetable]]
+		calc_table = Table(qccalc)
+		calc_table.setStyle(TableStyle([('VALIGN', (0,0), (-1,-1,), 'TOP')]))
 
 		#Creates ABL control and standard results tables
 		ablstandardtable = []
@@ -433,6 +532,13 @@ def qcreport(csv):
 		headshell = Table(qcheader)
 		headshell.setStyle(TableStyle([('FONTSIZE', (0,0), (-1,-1), 6)]))
 
+		aye1 = Paragraph("Replicate Ct",styles['spiritfont'])
+		aye2 = Paragraph("Standard Curve",styles['spiritfont'])
+		calcheader = [[aye1, aye2]]
+		calcshell = Table(calcheader)
+		calcshell.setStyle(TableStyle([('FONTSIZE', (0,0), (-1,-1), 6)]))
+
+
 		elements.append(headtable)
 		elements.append(s)
 		elements.append(Paragraph("Quality Control Report",styles['title']))
@@ -442,27 +548,32 @@ def qcreport(csv):
 		elements.append(Paragraph("Authorisation Checklist",styles['title']))
 		elements.append(s4)
 		elements.append(headshell)
-		elements.append(s3)
+		elements.append(s2)
 		elements.append(shell_table)
+		elements.append(PageBreak())
+		elements.append(Paragraph("Calculation Results",styles['Heading2']))
+		elements.append(s4)
+		elements.append(calcshell)
+		elements.append(s2)
+		elements.append(calc_table)
+		elements.append(s2)
 		elements.append(s2)
 		elements.append(Paragraph("ABL/GUS QC Results",styles['Heading2']))
 		elements.append(s2)
 		elements.append(Paragraph("Standard Results",styles['spiritfont']))
 		elements.append(s2)
 		elements.append(abltablestandard)
-		elements.append(s2)
+		elements.append(PageBreak())
 		elements.append(Paragraph("Control Results",styles['spiritfont']))
 		elements.append(s2)
 		elements.append(abltablecontrol)
-		elements.append(s)
-		elements.append(s)
 		elements.append(s)
 		elements.append(Paragraph("BCR-ABL QC Results",styles['Heading2']))
 		elements.append(s2)
 		elements.append(Paragraph("Standard Results",styles['spiritfont']))
 		elements.append(s2)
 		elements.append(bcrtablestandard)
-		elements.append(s2)
+		elements.append(PageBreak())
 		elements.append(Paragraph("Control Results",styles['spiritfont']))
 		elements.append(s2)
 		elements.append(bcrtablecontrol)
@@ -478,7 +589,11 @@ def qcreport(csv):
 		cursor.execute(qcinsert, (report,))
 
 		#Commits results to database
-		cnx.commit() 
+		#cnx.commit() 
+		
+		#Closes the cursor
+		cursor.close()
+		cnx.close()
 
 		
 

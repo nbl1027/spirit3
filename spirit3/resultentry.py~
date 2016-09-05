@@ -646,7 +646,6 @@ def sampleresult(csv):
 			temp2 = []
 			temp3 = []
 			for row in bcrsample:
-				print row
 				if row[10] == ids:
 					temp.append(row[5])
 					temp3.append(row[3])
@@ -727,5 +726,8 @@ def sampleresult(csv):
 
 	#Commits results to database
 		cnx.commit() 
+	
+	#Closes the connection
+		cnx.close()
 
 		

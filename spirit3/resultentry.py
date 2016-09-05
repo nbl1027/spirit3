@@ -727,4 +727,5 @@ def sampleresult(csv):
 	#Commits results to database
 		cnx.commit() 
 
+
 		
