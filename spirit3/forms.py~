@@ -13,5 +13,14 @@ class PatientForm(forms.ModelForm):
 
 
 class ResultUpload(forms.Form):
-	csv = forms.FileField()
+	results = forms.FileField()
+
+class QCReview(forms.Form):
+	OPTIONS = (
+	("Pass"),
+	("Fail"), 
+	("Check"), 
+	)
+	QCcheck = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
+	
 

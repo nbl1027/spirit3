@@ -15,3 +15,12 @@ class PatientForm(forms.ModelForm):
 class ResultUpload(forms.Form):
 	results = forms.FileField()
 
+class QCReview(forms.Form):
+	OPTIONS = (
+	(1, "Pass"),
+	(2, "Fail"), 
+	(3, "Check"), 
+	)
+	QCcheck = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
+	
+

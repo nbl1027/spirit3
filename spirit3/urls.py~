@@ -10,8 +10,7 @@ urlpatterns = [
 	url(r'^restricted/$', views.restricted, name='restricted'),
 	url(r'^logout/$', views.user_logout, name='logout'),
 	url(r'^result_upload/$', views.result_upload, name='result_upload'),
-	url(r'^print_users/$', views.print_users, name='print_users'),
-	url(r'^qc_review/$', views.qc_review, name='qc_review'),
+	url(r'^qc_review', views.qc_review, name='qc_review'),
 ]
 
 

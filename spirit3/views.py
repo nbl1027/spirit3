@@ -5,7 +5,7 @@ from datetime import datetime
 import numpy as np
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Patientinfo, Plate
-from spirit3.forms import PatientForm, ResultUpload
+from spirit3.forms import PatientForm, ResultUpload, QCReview
 from django.contrib.auth import authenticate, login, logout 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -36,11 +36,18 @@ def handle_uploaded_file(results):
 
 ##Report View
 def qc_review(request):
-	with open("plateqcreport.pdf", "rb") as pdf:
-		response = HttpResponse(pdf.read(), content_type="application/pdf")
-		response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-		return response
-	pdf.closed
+	if request.method == 'POST':
+		form = QCReview(request.POST)
+		#if form.is_valid():
+		#else:
+			#print form.errors
+	else:
+		form = QCReview()
+	return render(request, 'spirit3/qc_review.html', {'form':form})
+			
+	
+	
+	
 
 #Displays a list of patients
 def patient_list(request):

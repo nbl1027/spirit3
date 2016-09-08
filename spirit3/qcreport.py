@@ -9,6 +9,7 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.units import inch
 from reportlab.lib.colors import Color, HexColor
 import datetime
+from shutil import copyfile
 
 #***** Database Connection & Cursor *****
 cnx = mysql.connector.connect(user='kirsty', password='ngskirsty_201605', host='10.229.233.250', database = 'spirit3')
@@ -365,7 +366,7 @@ def qcreport(csv):
 			sampleqctab.append(row)
 
 
-		sampleqctable = Table(sampleqctab, colWidths=(0.60*inch, 0.60*inch, 0.60*inch, 1.25*inch), hAlign='RIGHT')
+		sampleqctable = Table(sampleqctab, colWidths=(0.60*inch, 0.85*inch, 0.75*inch, 1.25*inch), hAlign='RIGHT')
 		sampleqctable.setStyle(TableStyle([('BACKGROUND',(1,1),(-2,-2),colors.white), 
 	        		       ('TEXTCOLOR',(0,0),(1,-1),colors.black),
 					('FONTSIZE', (0,0), (-1,-1), 6), 
@@ -419,7 +420,7 @@ def qcreport(csv):
 			curvetab.append(temp)
 			count += 1
 	
-		standardcurvetable = Table(curvetab, colWidths=(0.60*inch, 1*inch, 1*inch), hAlign='RIGHT')
+		standardcurvetable = Table(curvetab, colWidths=(0.75*inch, 1.2*inch, 1.2*inch), hAlign='RIGHT')
 		standardcurvetable.setStyle(TableStyle([('BACKGROUND',(1,1),(-2,-2),colors.white), 
 	               			('TEXTCOLOR',(0,0),(1,-1),colors.black),
 					('FONTSIZE', (0,0), (-1,-1), 6), 
@@ -502,6 +503,8 @@ def qcreport(csv):
 		styles = getSampleStyleSheet()
 		styles.add(ParagraphStyle(name='centered', alignment=TA_CENTER))
 		styles.add(ParagraphStyle(name='spiritfont', fontSize = 12, alignment = TA_LEFT, textColor = '#602060'))
+		styles.add(ParagraphStyle(name='QCtitle', fontName= 'Helvetica-Bold', fontSize = 14))
+		styles.add(ParagraphStyle(name='Auth', fontName= 'Helvetica-Bold', fontSize = 14, alignment = TA_CENTER))
 		header = []
 		elements = []
 
@@ -545,21 +548,21 @@ def qcreport(csv):
 		elements.append(s2)
 		elements.append(plateresulttable)
 		elements.append(s)
-		elements.append(Paragraph("Authorisation Checklist",styles['title']))
+		elements.append(Paragraph("Authorisation Checklist",styles['Auth']))
 		elements.append(s4)
 		elements.append(headshell)
 		elements.append(s2)
 		elements.append(shell_table)
 		elements.append(PageBreak())
-		elements.append(Paragraph("Calculation Results",styles['Heading2']))
+		elements.append(Paragraph("Calculation Results",styles['QCtitle']))
 		elements.append(s4)
 		elements.append(calcshell)
 		elements.append(s2)
 		elements.append(calc_table)
 		elements.append(s2)
 		elements.append(s2)
-		elements.append(Paragraph("ABL/GUS QC Results",styles['Heading2']))
-		elements.append(s2)
+		elements.append(Paragraph("ABL/GUS QC Results",styles['QCtitle']))
+		elements.append(s4)
 		elements.append(Paragraph("Standard Results",styles['spiritfont']))
 		elements.append(s2)
 		elements.append(abltablestandard)
@@ -568,8 +571,8 @@ def qcreport(csv):
 		elements.append(s2)
 		elements.append(abltablecontrol)
 		elements.append(s)
-		elements.append(Paragraph("BCR-ABL QC Results",styles['Heading2']))
-		elements.append(s2)
+		elements.append(Paragraph("BCR-ABL QC Results",styles['QCtitle']))
+		elements.append(s4)
 		elements.append(Paragraph("Standard Results",styles['spiritfont']))
 		elements.append(s2)
 		elements.append(bcrtablestandard)
@@ -588,8 +591,12 @@ def qcreport(csv):
 	    		""")
 		cursor.execute(qcinsert, (report,))
 
+		#Copies the PDF to the static files 
+		copyfile('plateqcreport.pdf', '/home/kirsty/SPIRIT3/spirit3/static/pdf/plateqcreport.pdf')
+		
+
 		#Commits results to database
-		#cnx.commit() 
+		cnx.commit() 
 		
 		#Closes the cursor
 		cursor.close()
