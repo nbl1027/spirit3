@@ -396,7 +396,6 @@ class Resultanalysis(models.Model):
     mr = models.CharField(max_length=5, blank=True, null=True)
     sensitivity = models.CharField(max_length=45, blank=True, null=True)
     statementsid = models.ForeignKey('Statements', models.DO_NOTHING, db_column='statementsid', blank=True, null=True)
-    tkiid = models.ForeignKey('tki', models.DO_NOTHING, db_column='tkiid', blank=True, null=True)
     responseid = models.ForeignKey('response', models.DO_NOTHING, db_column='responseid', blank=True, null=True)
 
     def __unicode__(self):
@@ -488,6 +487,7 @@ class Samples(models.Model):
     trial = models.CharField(max_length=45, blank=True, null=True)
     external = models.CharField(max_length=45, blank=True, null=True)
     samtype = models.CharField(max_length=45, blank=True, null=True)
+    tkiid = models.ForeignKey('tki', models.DO_NOTHING, db_column='tkiid', blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.sampleid)
