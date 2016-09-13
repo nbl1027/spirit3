@@ -9,6 +9,7 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.units import inch
 from reportlab.lib.colors import Color, HexColor
 import datetime
+from shutil import copyfile
 
 #***** Database Connection & Cursor *****
 cnx = mysql.connector.connect(user='kirsty', password='ngskirsty_201605', host='10.229.233.250', database = 'spirit3')
@@ -589,6 +590,10 @@ def qcreport(csv):
 	    		VALUES ((SELECT plateid FROM plate ORDER BY plateid DESC LIMIT 1), %s);
 	    		""")
 		cursor.execute(qcinsert, (report,))
+
+		#Copies the PDF to the static files 
+		copyfile('plateqcreport.pdf', '/home/kirsty/SPIRIT3/spirit3/static/pdf/plateqcreport.pdf')
+		
 
 		#Commits results to database
 		cnx.commit() 

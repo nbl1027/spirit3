@@ -36,6 +36,31 @@ class Analysistype(models.Model):
         db_table = 'analysistype'
 
 
+class Tki(models.Model):
+    tkiid = models.AutoField(primary_key=True)
+    drug = models.CharField(max_legnth=45, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.analysistype)
+
+    class Meta:
+        managed = False
+        db_table = 'tki'
+
+
+class Response(models.Model):
+    responseid = models.AutoField(primary_key=True)
+    response = models.CharField(max_legnth=45, blank=True, null=True)
+
+    def __unicode__(self):
+        return unicode(self.analysistype)
+
+    class Meta:
+        managed = False
+        db_table = 'response'
+
+
+
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=80)
@@ -219,9 +244,11 @@ class Passfail(models.Model):
 
 class Patientinfo(models.Model):
     patientinfoid = models.AutoField(primary_key=True)
-    nhsnumber = models.IntegerField(blank=True, null=True)
-    initials = models.CharField(max_length=5, blank=True, null=True)
+    fullname = models.CharField(max_length=45, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
+    nhsnumber = models.IntegerField(blank=True, null=True)
+    postcode = models.CharField(max_lenth=45, blank=True, null=True)
+    tkiid = models.ForeignKey('tki', models.DO_NOTHING, db_column='tkiid', blank=True, null=True)
 
     def __str__(self):
 	return str(self.nhsnumber)
@@ -369,6 +396,8 @@ class Resultanalysis(models.Model):
     mr = models.CharField(max_length=5, blank=True, null=True)
     sensitivity = models.CharField(max_length=45, blank=True, null=True)
     statementsid = models.ForeignKey('Statements', models.DO_NOTHING, db_column='statementsid', blank=True, null=True)
+    tkiid = models.ForeignKey('tki', models.DO_NOTHING, db_column='tkiid', blank=True, null=True)
+    responseid = models.ForeignKey('response', models.DO_NOTHING, db_column='responseid', blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.resultanalysisid)
@@ -382,6 +411,8 @@ class Resultanalysis(models.Model):
 class Resultreports(models.Model):
     resultreportsid = models.AutoField(primary_key=True)
     resultreport = models.TextField(blank=True, null=True)
+    reportstatusid = models.ForeignKey(Reportstatus, models.DO_NOTHING, db_column='reportstatusid', blank=True, null=True) 
+    plateid = models.ForeignKey(Plate, models.DO_NOTHING, db_column='plateid', blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.resultreportsid)
@@ -454,6 +485,9 @@ class Samples(models.Model):
     recieved = models.DateTimeField(blank=True, null=True)
     activated = models.DateTimeField(blank=True, null=True)
     authorised = models.DateTimeField(blank=True, null=True)
+    trial = models.CharField(max_length=45, blank=True, null=True)
+    external = models.CharField(max_length=45, blank=True, null=True)
+    samtype = models.CharField(max_length=45, blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.sampleid)
