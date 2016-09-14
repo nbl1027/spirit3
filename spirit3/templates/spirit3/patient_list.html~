@@ -2,12 +2,13 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-	<h1> Result Upload </h>
-		<form role="form" method="post">
-  		{% csrf_token %}
- 		{{ form }}
-  		<input type="submit" value="Upload" />
-		</form>
+	{% for patient in patient_list %}
+		<div class="post">
+        		<div class="date">
+				<p><a href="{% url 'patient_detail' pk=patient.pk %}">{{ patient.nhsnumber }}</a></p>
+			</div>
+			<p>Patient Initials: {{ patient.initials }}</p>
+			<p>DOB : {{ patient.dob|linebreaksbr }}></p>
 		</div>
 	{% endfor %}	
 {% else %}

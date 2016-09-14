@@ -4,7 +4,7 @@ from .models import Patientinfo
 
 class PatientForm(forms.ModelForm):
     nhsnumber = forms.IntegerField
-    initials = forms.CharField
+    fullname = forms.CharField
     dob = forms.DateField
 
     class Meta:
@@ -17,9 +17,9 @@ class ResultUpload(forms.Form):
 
 class QCReview(forms.Form):
 	OPTIONS = (
-	("Pass"),
-	("Fail"), 
-	("Check"), 
+	(1, "Pass"),
+	(2, "Fail"), 
+	(3, "Check"), 
 	)
 	QCcheck = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=OPTIONS)
 	

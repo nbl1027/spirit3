@@ -109,8 +109,8 @@ insertablgusqc = ("""
 
 #Inserts the Sample analysis results into the database
 insertbcrresult = (""" 
-	       INSERT INTO resultanalysis(sampleid, BCRcopies, BCRABLratio, percentageratio, mr, sensitivity, statementsid)
-	       VALUES (%s, %s, %s, %s, %s, %s, %s);
+	       INSERT INTO resultanalysis(sampleid, BCRcopies, BCRABLratio, percentageratio, mr, sensitivity, statementsid, 			responseid)
+	       VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
 	       """)
 
 
@@ -587,6 +587,7 @@ def sampleresult(csv):
 	bcrsample = []
 	ablgusqcresult = []
 	bcrablresult = []
+	recentresult = []
 
 	#Selects the samples IDs and result IDs from the DB
 	if csv:
@@ -716,6 +717,88 @@ def sampleresult(csv):
 						temp2.append(11)
 					if len(temp2) == 6:
 						temp2.append(19)
+
+			#Calculates the treatment response and adss TKI to the sample
+			cursor.execute("""SELECT patientid FROM samples where sampleid = (%s)""", ((ids,)))
+			piid = cursor.fetchone()
+			cursor.execute("""SELECT tkiid FROM patientinfo WHERE patientinfoid = (%s)""", (piid))
+			TKI = cursor.fetchone()
+			TKI = TKI[0]
+			tkiadd = [ids, TKI]
+			cursor.execute(""" UPDATE samples SET tkiid = (%s) WHERE sampleid = (%s)""", (tkiadd))
+			samplesearch = [piid[0], TKI]
+			cursor.execute("""Select sampleid FROM samples WHERE patientid = (%s) AND tkiid = (%s)""", (samplesearch))
+			allpatsamps = cursor.fetchall()
+			cleanallpatsamples = removeduplicates(allpatsamps)
+			noofsamples = len(cleanallpatsamples)
+			noofmonths = noofsamples * 3
+			resultchecking = []
+			resultchecking2 = []
+			for yep in cleanallpatsamples:
+				yep = yep[0]
+				cursor.execute("""SELECT * FROM resultanalysis WHERE sampleid = (%s)""", ((yep,)))
+				resultcheck = cursor.fetchall()
+				for yeah in resultcheck:
+					resultchecking.append(yeah[0])
+			#for yep in resultchecking:
+			#	cursor.execute("""SELECT * FROM resultanalysis WHERE sampleresultid = (%s)""", ((yep,)))
+			#	resultcheck2 = cursor.fetchall()
+			#	for yeah in resultcheck2:
+			#		resultchecking2.append(yeah)
+			print len(resultchecking)
+			if len(resultchecking) != 0:
+				if noofsamples >=2:
+					for row in cleanallpatsamples:
+						cursor.execute("""SELECT * FROM resultanalysis WHERE sampleid = (%s)""", (row))
+						mostrecentresult = cursor.fetchall()
+						recentresult.append(mostrecentresult[-1])
+					resultsagain = []
+					for row in recentresult:
+						resultsagain.append(list(row))
+					mmrresult1 = resultsagain[-1][4] #%BCR ABL for most recent 
+					mmrresult2 = resultsagain[-2][4]
+					if mmrresult2 <=0.1: #Checks to make sure there is no loss of MMR
+						if mmrresult1 >0.1:
+							if percentage >0.1:
+								if mmrresult1 or percentage >1:
+									rep = 3
+			else:
+				rep = 0
+			if rep == 0 or rep is None:
+				if TKI == 1 or TKI == 3:
+					if noofmonths <= 3 and noofmonths <6:
+						if percentage <10:
+							rep = 1
+						elif percentage >10:
+							rep = 2
+					elif noofmonths >=6 and noofmonths <12:
+						if percentage <=1:
+							rep = 1
+						elif percentage >1 and percentage <=10:
+							rep = 2
+						elif percentage >10:
+							rep = 3
+					elif noofmonths >=12: 
+						if percentage <=0.1:
+							rep = 1
+						elif percentage >0.1 and percentage <=1:
+							rep = 2
+						elif percentage>1:
+							rep = 3	
+				else:
+					if noofmonths <=3 and noofmonths <6:
+						if percentage <=10:
+							rep = 1
+						elif percentage >10:
+							rep = 2
+					if noofmonths >=6:
+						if percentage <=1:
+							rep = 1
+						elif percentage >1 and percentage <=10:
+							rep = 2
+						elif thisresult[3] >10:
+							rep=3
+			temp2.append(rep)
 			bcrablresult.append(temp2)
 	
 	#Inputs Results into Database 
@@ -726,8 +809,6 @@ def sampleresult(csv):
 
 	#Commits results to database
 		cnx.commit() 
-	
-	#Closes the connection
-		cnx.close()
+
 
 		

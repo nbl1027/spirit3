@@ -38,7 +38,7 @@ class Analysistype(models.Model):
 
 class Tki(models.Model):
     tkiid = models.AutoField(primary_key=True)
-    drug = models.CharField(max_legnth=45, blank=True, null=True)
+    drug = models.CharField(max_length=45, blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.analysistype)
@@ -50,7 +50,7 @@ class Tki(models.Model):
 
 class Response(models.Model):
     responseid = models.AutoField(primary_key=True)
-    response = models.CharField(max_legnth=45, blank=True, null=True)
+    response = models.CharField(max_length=45, blank=True, null=True)
 
     def __unicode__(self):
         return unicode(self.analysistype)
@@ -247,7 +247,7 @@ class Patientinfo(models.Model):
     fullname = models.CharField(max_length=45, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
     nhsnumber = models.IntegerField(blank=True, null=True)
-    postcode = models.CharField(max_lenth=45, blank=True, null=True)
+    postcode = models.CharField(max_length=45, blank=True, null=True)
     tkiid = models.ForeignKey('tki', models.DO_NOTHING, db_column='tkiid', blank=True, null=True)
 
     def __str__(self):

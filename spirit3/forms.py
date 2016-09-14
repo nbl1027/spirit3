@@ -4,12 +4,12 @@ from .models import Patientinfo
 
 class PatientForm(forms.ModelForm):
     nhsnumber = forms.IntegerField
-    initials = forms.CharField
+    fullname = forms.CharField
     dob = forms.DateField
 
     class Meta:
         model = Patientinfo
-	fields = ('nhsnumber', 'initials', 'dob')
+	fields = ('nhsnumber', 'fullname', 'dob')
 
 
 class ResultUpload(forms.Form):

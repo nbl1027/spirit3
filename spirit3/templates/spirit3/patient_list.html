@@ -7,7 +7,7 @@
         		<div class="date">
 				<p><a href="{% url 'patient_detail' pk=patient.pk %}">{{ patient.nhsnumber }}</a></p>
 			</div>
-			<p>Patient Initials: {{ patient.initials }}</p>
+			<p>Patient Initials: {{ patient.fullname }}</p>
 			<p>DOB : {{ patient.dob|linebreaksbr }}></p>
 		</div>
 	{% endfor %}	
